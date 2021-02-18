@@ -15,7 +15,6 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
-    byebug
     @event = Event.new(event_params)
     if @event.save
       render json: EventSerializer.new(@event).serializable_hash[:data][:attributes], status: :created

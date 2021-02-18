@@ -197,7 +197,7 @@ for (var pair of formData.entries()) {
 
 You should see something like this:
 
-![Console Output for FormData](console-output-for-formData.png)
+![Console Output for FormData](img/console-output-for-formData.png)
 
 Now, we need to send this data to our rails api using a `fetch` call. To do this, let's replace our debugger with this:
 
@@ -233,7 +233,7 @@ rails s
 
 Now, let's reload the index.html file in the browser and submit the form again.
 
-![cors error](cors-error.png)
+![cors error](img/cors-error.png)
 
 Whoops! This error means that we don't have a cross origin resource sharing (CORS) policy configured for our api. Let's go ahead and do that now. 
 
@@ -298,11 +298,11 @@ It's generally best to only permit access to your api from places that will reas
 
 After we've made this change, we should be able to fill in the form in `index.html`, submit it and hit the `byebug` we added to  `EventsController#create`. Within the byebug, we'll want to take a look at the poster within params by invoking `event_params[:poster]`
 
-![Event Params Poster](byebug-output-for-event-params-poster.png)
+![Event Params Poster](img/byebug-output-for-event-params-poster.png)
 
 Now if we continue through the byebug, we can see if it goes through correctly. After letting the request go through, we can check the network tab in the chrome developer tools to see what the response looks like.
 
-![Network Tab Response](network-tab-response-from-request.png)
+![Network Tab Response](img/network-tab-response-from-request.png)
 
 So, the request is going through here fine, but the poster is not showing up. We don't really know why that is at this point, so it would be good to check if the upload is actually happening correctly. To do this, we can drop into the rails console and poke around.
 
@@ -384,7 +384,7 @@ You'd also want to do this for production and substitute the domain that hosts y
 
 If you open this one in the browser, you should see the file that you uploaded before via the form.
 
-![File Successfully Uploaded](file-successfully-uploaded.png)
+![File Successfully Uploaded](img/file-successfully-uploaded.png)
 
 Okay! So, now let's see if we can get this to come through as part of our api response. To do that, we'll need to kill our rails server and reboot (because we change our config/environments/development.rb file and we need those changes to take effect). We can leave the byebug in the controller in place so we can experiment and see if the poster_url is included.
 
@@ -455,7 +455,7 @@ end
 
 Now, we should be able to submit the form again and check the network tab in the devtools again. This time, we should be able to see the poster_url in the api response.
 
-![Network Tab with poster_url](network-tab-response-with-poster-url.png)
+![Network Tab with poster_url](img/network-tab-response-with-poster-url.png)
 
 Eureka!!! We now have the ability to send a file via a form to our rails api and we'll get back a url pointing to where that file is stored so we can use it as an image or video source (or a link if it's a pdf). 
 
@@ -512,7 +512,7 @@ At this point, it would be nice if we could see in the browser window that it's 
 
 Now, when you fill in the form in your browser and submit it, you'll be able to see the events appearing in the grid. 
 
-![The Finished Product](finished-product.png)
+![The Finished Product](img/finished-product.png)
 
 ## Resources
 

@@ -516,7 +516,7 @@ Now, when you fill in the form in your browser and submit it, you'll be able to 
 
 ## Resources
 
-- [Medium Article](https://medium.com/better-programming/how-to-upload-images-to-a-rails-api-and-get-them-back-again-b7b3e1106a13)
+- [How to upload images to a rails api and get them back again on Medium](https://medium.com/better-programming/how-to-upload-images-to-a-rails-api-and-get-them-back-again-b7b3e1106a13)
 - [ActiveStorage has one attached](https://edgeguides.rubyonrails.org/active_storage_overview.html#has-one-attached)
 - [FormData on MDN](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
 - [How to Inspect formData on SO](https://stackoverflow.com/questions/17066875/how-to-inspect-formdata)

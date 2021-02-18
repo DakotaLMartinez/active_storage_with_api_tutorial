@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testing File Uploads</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  <section class="max-w-4xl mt-4 w-11/12 mx-auto bg-blue-50 p-8 shadow-lg rounded-lg">
+
+    <h1 class="text-3xl font-semibold text-center">Add an Event</h1>
+    <form>
+      <fieldset class="my-2">
+        <label 
+          class="w-full block uppercase ml-3 mb-3" for="name"
+        >
+          Name
+        </label>
+        <input 
+          type="text"
+          name="name"
+          id="name"
+          class="w-full block p-3 shadow-sm"
+          placeholder="Name"
+        />
+      </fieldset>
+      <fieldset class="my-2">
+        <label 
+          class="w-full block uppercase ml-3 mb-3" for="start_time"
+        >
+          Start Time
+        </label>
+        <input 
+          type="datetime-local"
+          name="start_time"
+          id="start_time"
+          class="w-full block p-3 shadow-sm"
+        />
+      </fieldset>
+      <fieldset class="my-2">
+        <label 
+          class="w-full block uppercase ml-3 mb-3" for="end_time"
+        >
+          End Time
+        </label>
+        <input 
+          type="datetime-local"
+          name="end_time"
+          id="end_time"
+          class="w-full block p-3 shadow-sm"
+        />
+      </fieldset>
+      <fieldset class="my-2">
+        <label 
+          class="w-full block uppercase ml-3 mb-3" for="location"
+        >
+          Location
+        </label>
+        <input 
+          type="text"
+          name="location"
+          id="location"
+          class="w-full block p-3 shadow-sm"
+          placeholder="Location"
+        />
+      </fieldset>
+      <fieldset class="my-2">
+        <label 
+          class="w-full block uppercase ml-3 mb-0" for="poster"
+        >
+          Poster
+        </label>
+        <input 
+          type="file"
+          name="poster"
+          id="poster"
+          class="w-full block p-3"
+          placeholder="poster"
+        />
+      </fieldset>
+      <button 
+        class="w-full block p-3 bg-green-400 hover:bg-green-500 text-center transition duration-200" 
+        type="submit"
+      >
+        Create Event
+      </button>
+    </form>
+
+  </section>
+  <section class="max-w-4xl mt-4 w-11/12 mx-auto bg-blue-50 p-8 shadow-lg rounded-lg grid grid-cols-2 gap-2" id="results">
+
+  </section>
+
+
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded",()=> {
+      const container = document.querySelector('#results');
+      document.addEventListener("submit",(e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData();
+        formData.append('event[name]', form.name.value);
+        formData.append('event[start_time]', form.start_time.value);
+        formData.append('event[end_time]', form.end_time.value);
+        formData.append('event[location]', form.location.value);
+        formData.append('event[poster]', form.poster.files[0], form.poster.value);
+        
+        fetch('http://localhost:3000/events', {
+          method: 'post', 
+          body: formData
+        })
+          .then(res => res.json())
+          .then(event => {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = "shadow bg-green-50 p-3"
+            eventDiv.innerHTML = `
+            <h1 class="event-name text-2xl"></h1>
+            <img src="${event.poster_url}" class="event-poster w-full block" />  
+            <p class="event-start-time"></p> 
+            <p class="event-end-time"></p> 
+            <p class="event-location"></p>
+            `
+            eventDiv.querySelector('.event-name').textContent = event.name;
+            eventDiv.querySelector('.event-start-time').textContent = event.start_time;
+            eventDiv.querySelector('.event-end-time').textContent = event.end_time;
+            eventDiv.querySelector('.event-location').textContent = event.location;
+
+            container.appendChild(eventDiv);
+          })
+      })
+    })
+  </script>
+</body>
+</html>

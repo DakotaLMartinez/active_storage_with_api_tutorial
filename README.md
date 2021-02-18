@@ -514,6 +514,82 @@ Now, when you fill in the form in your browser and submit it, you'll be able to 
 
 ![The Finished Product](img/finished-product.png)
 
+## Refactoring to Allow for multiple file uploads
+
+Change your model file:
+
+```rb
+class Event < ApplicationRecord
+  has_many_attached :posters
+
+  def poster_urls
+    posters.map{|p| Rails.application.routes.url_helpers.url_for(p) }
+  end
+end☄
+```
+
+Change the controller strong params 
+
+```rb
+def event_params
+  params.require(:event).permit(:name, :start_time, :end_time, :location, posters: [])
+end
+```
+
+Update the Serializer
+
+```rb
+class EventSerializer
+  include JSONAPI::Serializer
+  attributes :id, :name, :start_time, :end_time, :location, :poster_urls
+end
+```
+
+Finally, change the way the form data is collected in the JS: 
+
+```js
+document.addEventListener("DOMContentLoaded",()=> {
+  const container = document.querySelector('#results');
+  document.addEventListener("submit",(e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData();
+    formData.append('event[name]', form.name.value);
+    formData.append('event[start_time]', form.start_time.value);
+    formData.append('event[end_time]', form.end_time.value);
+    formData.append('event[location]', form.location.value);
+    for(let i = 0 ; i < form.poster.files.length ; i++) {
+      formData.append('event[posters][]', form.poster.files[i], form.poster.files[i].name);
+    }
+    
+    fetch('http://localhost:3000/events', {
+      method: 'post', 
+      body: formData
+    })
+      .then(res => res.json())
+      .then(event => {
+        const eventDiv = document.createElement('div');
+        eventDiv.className = "shadow bg-green-50 p-3"
+        eventDiv.innerHTML = `
+        <h1 class="event-name text-2xl"></h1>
+        <div class="event-images grid grid-cols-${event.poster_urls.length} gap-1"></div>
+        <p class="event-start-time"></p> 
+        <p class="event-end-time"></p> 
+        <p class="event-location"></p>
+        `
+        eventDiv.querySelector('.event-name').textContent = event.name;
+        eventDiv.querySelector('.event-images').innerHTML = event.poster_urls.map(url => `<img src="${url}" />`).join('')
+        eventDiv.querySelector('.event-start-time').textContent = event.start_time;
+        eventDiv.querySelector('.event-end-time').textContent = event.end_time;
+        eventDiv.querySelector('.event-location').textContent = event.location;
+
+        container.appendChild(eventDiv);
+      })
+  })
+})
+```
+
+You can check out [this branch](https://github.com/DakotaLMartinez/active_storage_with_api_tutorial/tree/multiple_file_uploads) on the GitHub repo to see the version of the code that supports multiple file uploads.
 ## Resources
 
 - [How to upload images to a rails api and get them back again on Medium](https://medium.com/better-programming/how-to-upload-images-to-a-rails-api-and-get-them-back-again-b7b3e1106a13)

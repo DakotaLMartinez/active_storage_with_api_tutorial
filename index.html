@@ -125,7 +125,6 @@
             <p class="event-location"></p>
             `
             eventDiv.querySelector('.event-name').textContent = event.name;
-
             eventDiv.querySelector('.event-images').innerHTML = event.poster_urls.map(url => `<img src="${url}" />`).join('')
             eventDiv.querySelector('.event-start-time').textContent = event.start_time;
             eventDiv.querySelector('.event-end-time').textContent = event.end_time;

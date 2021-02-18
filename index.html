@@ -73,6 +73,7 @@
         </label>
         <input 
           type="file"
+          multiple
           name="poster"
           id="poster"
           class="w-full block p-3"
@@ -104,7 +105,10 @@
         formData.append('event[start_time]', form.start_time.value);
         formData.append('event[end_time]', form.end_time.value);
         formData.append('event[location]', form.location.value);
-        formData.append('event[poster]', form.poster.files[0], form.poster.value);
+        for(let i = 0 ; i < form.poster.files.length ; i++) {
+          formData.append('event[posters][]', form.poster.files[i], form.poster.files[i].name);
+        }
+        debugger
         
         fetch('http://localhost:3000/events', {
           method: 'post', 
@@ -116,12 +120,14 @@
             eventDiv.className = "shadow bg-green-50 p-3"
             eventDiv.innerHTML = `
             <h1 class="event-name text-2xl"></h1>
-            <img src="${event.poster_url}" class="event-poster w-full block" />  
+            <div class="event-images grid grid-cols-${event.poster_urls.length} gap-1"></div>
             <p class="event-start-time"></p> 
             <p class="event-end-time"></p> 
             <p class="event-location"></p>
             `
             eventDiv.querySelector('.event-name').textContent = event.name;
+
+            eventDiv.querySelector('.event-images').innerHTML = event.poster_urls.map(url => `<img src="${url}" />`).join('')
             eventDiv.querySelector('.event-start-time').textContent = event.start_time;
             eventDiv.querySelector('.event-end-time').textContent = event.end_time;
             eventDiv.querySelector('.event-location').textContent = event.location;
